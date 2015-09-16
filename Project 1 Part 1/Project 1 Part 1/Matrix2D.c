@@ -74,6 +74,63 @@ Result = Mtx0*Mtx1
 void Matrix2DConcat(Matrix2D *pResult, Matrix2D *pMtx0, Matrix2D *pMtx1)
 {
 
+
+	Matrix2D t0, t1, output;
+	Matrix2DIdentity(&t0);
+	Matrix2DIdentity(&t1);
+	float x, y;
+
+	int a, b, c;
+	for (a = 0; a < 3; a++)
+	{
+		for (b = 0; b < 3; b++)
+		{
+			x = pMtx0->m[a][b];
+			y = pMtx1->m[a][b];
+
+			t0.m[a][b] = x;
+			t1.m[a][b] = y;
+			
+		}
+
+	}
+
+
+
+	for (a = 0; a < 3; a++)
+	{
+		for (b = 0; b < 3; b++)
+		{
+			output.m[a][b] = 0;
+			for (c = 0; c < 3; c++)
+			{
+				x = pMtx0->m[a][c];
+				y = pMtx1->m[c][b];
+
+				output.m[a][b] += x*y;
+			}
+			
+		}
+
+	}
+
+
+	for (a = 0; a < 3; a++)
+	{
+		for (b = 0; b < 3; b++)
+		{
+			x = output.m[a][b];
+			pResult->m[a][b] = x;
+		}
+
+	}
+	
+
+
+
+
+
+
 	/*
 for(int i=0; i<=Array.getLength(m.getMatrix())-1;i++)
 
@@ -179,7 +236,7 @@ for(int i=0; i<=Array.getLength(m.getMatrix())-1;i++)
    pResult->m[2][1] = pMtx0->m[2][0] * pMtx1->m[0][1] + pMtx0->m[2][1] * pMtx1->m[1][1] + pMtx0->m[2][2] * pMtx1->m[2][1];
    pResult->m[2][2] = pMtx0->m[2][0] * pMtx1->m[0][2] + pMtx0->m[2][1] * pMtx1->m[2][1] + pMtx0->m[2][2] * pMtx1->m[2][2];
   */
-
+/*
 Matrix2D tempMat;
 Matrix2DIdentity(&tempMat);
 
@@ -252,7 +309,7 @@ for (i = 0; i < 3; i++)
 
 	}
 }
-
+*/
 
 }
 
@@ -376,22 +433,23 @@ void Matrix2DMultVec(Vector2D *pResult, Matrix2D *pMtx, Vector2D *pVec)
     {
         weight= weight +pMtx->m[2][i];
     }
+	
+    float x1, x2, x3, y3, y1, y2, xVec, yVec, outX, outY;
+	xVec = pVec->x;
+	yVec = pVec->y;
+    x1 = pMtx->m[0][0] * xVec;
+    x2=pMtx->m[0][1] * yVec;
+	x3 = pMtx->m[0][2];
 
-    float x1, x2, y1, y2, xVec, yVec, outX, outY;
-
-    x1 = pMtx->m[0][0] * pVec->x;
-    x2=pMtx->m[0][1] * pVec->y;
-    xVec=pVec->x;
-
-
-    y1=pMtx->m[1][0] * pVec->x;
-    y2=pMtx->m[1][1] * pVec->y;
-    yVec=pVec->y;
+	yVec = pVec->y;
+    y1=pMtx->m[1][0] *xVec;
+    y2=pMtx->m[1][1] * yVec;
+	y3 = pMtx->m[1][2];
 
 
 
-    outX = x1*xVec + x2*yVec + (1/weight)*pMtx->m[0][2];
-    outY = y1*xVec + y2*yVec + (1/weight)*pMtx->m[1][2];
+    outX = (1/weight)*(x1 + x2 + x3);
+    outY = (1/weight)*(y1 + y2 + y3);
 
 
 	pResult->x = outX;
